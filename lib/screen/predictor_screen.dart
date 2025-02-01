@@ -1,11 +1,10 @@
 import 'dart:convert';
 
+import 'package:baldness_prediction_app/shared/widget/custom_switch_widget.dart';
 import 'package:baldness_prediction_app/util/dialog_util.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:lottie/lottie.dart';
 
 class PredictorScreen extends StatefulWidget {
@@ -21,6 +20,11 @@ class _PredictorScreenState extends State<PredictorScreen> {
       TextEditingController(text: "54.236.4.87");
   final TextEditingController portController =
       TextEditingController(text: "3010");
+  //age controller
+  final _ageController = TextEditingController();
+
+  //field
+  int? _lastValidAge;
 
   // Features
   bool genetics = false;
@@ -205,6 +209,14 @@ class _PredictorScreenState extends State<PredictorScreen> {
   }
 
   @override
+  void dispose() {
+    ipController.dispose();
+    portController.dispose();
+    _ageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -241,7 +253,7 @@ class _PredictorScreenState extends State<PredictorScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-          children: [
+          children: <Widget>[
             // Entrada de IP y puerto
             TextField(
               controller: ipController,
@@ -257,44 +269,19 @@ class _PredictorScreenState extends State<PredictorScreen> {
               enabled: !loading,
             ),
             // Otros Switches y Dropdowns
-            SwitchListTile(
-              title: const Text("¿Tienes antecedentes familiares de calvicie?"),
-              value: genetics,
+            CustomSwitchWidget(
+              labelText: "¿Tienes antecedentes familiares de calvicie?",
+              initialValue: genetics,
+              textOn: "Si",
+              textOff: "No",
               onChanged:
                   loading ? null : (value) => setState(() => genetics = value),
             ),
-//By default
-            Row(
-              children: [
-                const SizedBox(width: 10),
-                const Text(
-                  "¿Tienes cambios hormonales?",
-                  style: TextStyle(fontSize: 15),
-                  maxLines: 2,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: LiteRollingSwitch(
-                    value: false,
-                    width: 100,
-                    textOn: "Si",
-                    textOff: "No",
-                    onChanged: (bool state) {
-                      if (kDebugMode) {
-                        print('turned ${(state) ? 'Si' : 'No'}');
-                      }
-                    },
-                    onDoubleTap: () {},
-                    onSwipe: () {},
-                    onTap: () {},
-                  ),
-                ),
-              ],
-            ),
-
-            SwitchListTile(
-              title: const Text("¿Has tenido cambios hormonales?"),
-              value: hormonalChanges,
+            CustomSwitchWidget(
+              labelText: "¿Has tenido cambios hormonales?",
+              initialValue: hormonalChanges,
+              textOn: "Si",
+              textOff: "No",
               onChanged: loading
                   ? null
                   : (value) => setState(() => hormonalChanges = value),
@@ -377,33 +364,66 @@ class _PredictorScreenState extends State<PredictorScreen> {
               keyboardType: TextInputType.number,
               onChanged: loading
                   ? null
-                  : (value) => setState(() => age = int.tryParse(value)),
+                  : (value) {
+                      if (value.isEmpty) {
+                        setState(() => age = null);
+                        _lastValidAge = null; // Reset last valid age
+                        return;
+                      }
+
+                      int? parsedValue = int.tryParse(value);
+
+                      if (parsedValue != null &&
+                          parsedValue >= 0 &&
+                          parsedValue <= 100) {
+                        setState(() => age = parsedValue);
+                        _lastValidAge = parsedValue; // Store the valid value
+                      } else {
+                        // Option 3: Revert to the last valid value (if you store it)
+                        if (_lastValidAge != null) {
+                          _ageController.text = _lastValidAge.toString();
+                          setState(() => age = _lastValidAge);
+                        } else {
+                          _ageController.clear(); // Clear if no last valid age
+                          setState(() => age = null); // Reset age to null
+                        }
+                      }
+                    },
               enabled: !loading,
+              controller:
+                  _ageController, // Important: Add a TextEditingController
             ),
-            SwitchListTile(
-              title:
-                  const Text("¿Tienes malos hábitos de cuidado del cabello?"),
-              value: poorHairCare,
+            CustomSwitchWidget(
+              labelText: "¿Tienes malos hábitos de cuidado del cabello?",
+              initialValue: poorHairCare,
+              textOn: "Si",
+              textOff: "No",
               onChanged: loading
                   ? null
                   : (value) => setState(() => poorHairCare = value),
             ),
-            SwitchListTile(
-              title: const Text("¿Has estado expuesto a factores ambientales?"),
-              value: environmentalFactors,
+            CustomSwitchWidget(
+              labelText: "¿Has estado expuesto a factores ambientales?",
+              initialValue: environmentalFactors,
+              textOn: "Si",
+              textOff: "No",
               onChanged: loading
                   ? null
                   : (value) => setState(() => environmentalFactors = value),
             ),
-            SwitchListTile(
-              title: const Text("¿Fumas?"),
-              value: smoking,
+            CustomSwitchWidget(
+              labelText: "¿Fumas?",
+              initialValue: smoking,
+              textOn: "Si",
+              textOff: "No",
               onChanged:
                   loading ? null : (value) => setState(() => smoking = value),
             ),
-            SwitchListTile(
-              title: const Text("¿Has perdido peso recientemente?"),
-              value: weightLoss,
+            CustomSwitchWidget(
+              labelText: "¿Has perdido peso recientemente?",
+              initialValue: weightLoss,
+              textOn: "Si",
+              textOff: "No",
               onChanged: loading
                   ? null
                   : (value) => setState(() => weightLoss = value),
