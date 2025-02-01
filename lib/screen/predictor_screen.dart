@@ -145,17 +145,17 @@ class _PredictorScreenState extends State<PredictorScreen> {
 
     final url = 'http://${ipController.text}:${portController.text}/predict';
     final body = {
-      "Genetics": genetics ? 1 : 0,
-      "Hormonal Changes": hormonalChanges ? 1 : 0,
-      "Medical Conditions": medicalCondition,
-      "Medications & Treatments": medication,
-      "Nutritional Deficiencies": nutritionalDeficiency,
-      "Stress": stressLevel,
-      "Age": age,
-      "Poor Hair Care Habits": poorHairCare ? 1 : 0,
-      "Environmental Factors": environmentalFactors ? 1 : 0,
-      "Smoking": smoking ? 1 : 0,
-      "Weight Loss": weightLoss ? 1 : 0,
+      'genetica': genetics ? 1 : 0,
+      'cambios_hormonales': hormonalChanges ? 1 : 0,
+      'condiciones_medicas': medicalCondition,
+      'medicamentos_tratamientos': medication,
+      'deficiencias_nutricionales': nutritionalDeficiency,
+      'estres': stressLevel,
+      'edad': age,
+      'malos_habitos_cuidado_capilar': poorHairCare ? 1 : 0,
+      'factores_ambientales': environmentalFactors ? 1 : 0,
+      'tabaquismo': smoking ? 1 : 0,
+      'perdida_peso': weightLoss ? 1 : 0,
     };
 
     try {
