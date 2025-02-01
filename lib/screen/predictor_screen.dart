@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:baldness_prediction_app/util/dialog_util.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:lottie/lottie.dart';
 
 class PredictorScreen extends StatefulWidget {
@@ -261,6 +263,35 @@ class _PredictorScreenState extends State<PredictorScreen> {
               onChanged:
                   loading ? null : (value) => setState(() => genetics = value),
             ),
+//By default
+            Row(
+              children: [
+                const SizedBox(width: 10),
+                const Text(
+                  "¿Tienes cambios hormonales?",
+                  style: TextStyle(fontSize: 15),
+                  maxLines: 2,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: LiteRollingSwitch(
+                    value: false,
+                    width: 100,
+                    textOn: "Si",
+                    textOff: "No",
+                    onChanged: (bool state) {
+                      if (kDebugMode) {
+                        print('turned ${(state) ? 'Si' : 'No'}');
+                      }
+                    },
+                    onDoubleTap: () {},
+                    onSwipe: () {},
+                    onTap: () {},
+                  ),
+                ),
+              ],
+            ),
+
             SwitchListTile(
               title: const Text("¿Has tenido cambios hormonales?"),
               value: hormonalChanges,
@@ -427,7 +458,6 @@ class _PredictorScreenState extends State<PredictorScreen> {
               onPressed: handlePredict,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(50),
-                side: const BorderSide(color: Colors.amberAccent),
               ),
               label: const Text("PREDECIR"),
 /*              child: Icon(

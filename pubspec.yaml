@@ -42,6 +42,7 @@ dependencies:
   riverpod: ^2.6.1
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
+  lite_rolling_switch: ^1.0.1
 
 dev_dependencies:
   flutter_test:
