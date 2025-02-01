@@ -238,157 +238,168 @@ class _PredictorScreenState extends State<PredictorScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child:
-            //stack con barra fija que contiene el text de copyright "© 2025 by Carlos Gutierrez"
-            Stack(
-          alignment: Alignment.bottomCenter,
+        child: ListView(
           children: [
-            ListView(
-              children: [
-                // Entrada de IP y puerto
-                TextField(
-                  controller: ipController,
-                  decoration:
-                      const InputDecoration(labelText: "IP/Host del servidor"),
+            // Entrada de IP y puerto
+            TextField(
+              controller: ipController,
+              decoration:
+                  const InputDecoration(labelText: "IP/Host del servidor"),
+              enabled: !loading,
+            ),
+            TextField(
+              controller: portController,
+              decoration:
+                  const InputDecoration(labelText: "Puerto del servidor"),
+              keyboardType: TextInputType.number,
+              enabled: !loading,
+            ),
+            // Otros Switches y Dropdowns
+            SwitchListTile(
+              title: const Text("¿Tienes antecedentes familiares de calvicie?"),
+              value: genetics,
+              onChanged:
+                  loading ? null : (value) => setState(() => genetics = value),
+            ),
+            SwitchListTile(
+              title: const Text("¿Has tenido cambios hormonales?"),
+              value: hormonalChanges,
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => hormonalChanges = value),
+            ),
+            DropdownButtonFormField<int>(
+              decoration: const InputDecoration(
+                labelText: "¿Tienes alguna condición médica?",
+                labelStyle: TextStyle(
+                  // Estilo para la etiqueta
+                  fontSize: 13, // Tamaño de fuente más pequeño
                 ),
-                TextField(
-                  controller: portController,
-                  decoration:
-                      const InputDecoration(labelText: "Puerto del servidor"),
-                  keyboardType: TextInputType.number,
+              ),
+              items: medicalConditions
+                  .map((item) => DropdownMenuItem<int>(
+                        value: item["value"] as int,
+                        child: Text(item["label"] as String),
+                      ))
+                  .toList(),
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => medicalCondition = value),
+            ),
+            DropdownButtonFormField<int>(
+              decoration: const InputDecoration(
+                labelText: "¿Has tomado medicamentos o tratamientos?",
+                labelStyle: TextStyle(
+                  // Estilo para la etiqueta
+                  fontSize: 13, // Tamaño de fuente más pequeño
                 ),
-                // Otros Switches y Dropdowns
-                SwitchListTile(
-                  title: const Text(
-                      "¿Tienes antecedentes familiares de calvicie?"),
-                  value: genetics,
-                  onChanged: (value) => setState(() => genetics = value),
+              ),
+              items: medications
+                  .map((item) => DropdownMenuItem<int>(
+                        value: item["value"] as int,
+                        child: Text(item["label"] as String),
+                      ))
+                  .toList(),
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => medication = value),
+            ),
+            DropdownButtonFormField<int>(
+              decoration: const InputDecoration(
+                labelText:
+                    "¿Tienes o has tenido alguna deficiencia nutricional?",
+                labelStyle: TextStyle(
+                  // Estilo para la etiqueta
+                  fontSize: 13, // Tamaño de fuente más pequeño
                 ),
-                SwitchListTile(
-                  title: const Text("¿Has tenido cambios hormonales?"),
-                  value: hormonalChanges,
-                  onChanged: (value) => setState(() => hormonalChanges = value),
+              ),
+              items: nutritionalDeficiencies
+                  .map((item) => DropdownMenuItem<int>(
+                        value: item["value"] as int,
+                        child: Text(item["label"] as String),
+                      ))
+                  .toList(),
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => nutritionalDeficiency = value),
+            ),
+            DropdownButtonFormField<int>(
+              decoration: const InputDecoration(
+                labelText: "¿Que nivel de estrés manejas comunmente?",
+                labelStyle: TextStyle(
+                  // Estilo para la etiqueta
+                  fontSize: 13, // Tamaño de fuente más pequeño
                 ),
-                DropdownButtonFormField<int>(
-                  decoration: const InputDecoration(
-                    labelText: "¿Tienes alguna condición médica?",
-                    labelStyle: TextStyle(
-                      // Estilo para la etiqueta
-                      fontSize: 13, // Tamaño de fuente más pequeño
-                    ),
-                  ),
-                  items: medicalConditions
-                      .map((item) => DropdownMenuItem<int>(
-                            value: item["value"] as int,
-                            child: Text(item["label"] as String),
-                          ))
-                      .toList(),
-                  onChanged: (value) =>
-                      setState(() => medicalCondition = value),
-                ),
-                DropdownButtonFormField<int>(
-                  decoration: const InputDecoration(
-                    labelText: "¿Has tomado medicamentos o tratamientos?",
-                    labelStyle: TextStyle(
-                      // Estilo para la etiqueta
-                      fontSize: 13, // Tamaño de fuente más pequeño
-                    ),
-                  ),
-                  items: medications
-                      .map((item) => DropdownMenuItem<int>(
-                            value: item["value"] as int,
-                            child: Text(item["label"] as String),
-                          ))
-                      .toList(),
-                  onChanged: (value) => setState(() => medication = value),
-                ),
-                DropdownButtonFormField<int>(
-                  decoration: const InputDecoration(
-                    labelText:
-                        "¿Tienes o has tenido alguna deficiencia nutricional?",
-                    labelStyle: TextStyle(
-                      // Estilo para la etiqueta
-                      fontSize: 13, // Tamaño de fuente más pequeño
-                    ),
-                  ),
-                  items: nutritionalDeficiencies
-                      .map((item) => DropdownMenuItem<int>(
-                            value: item["value"] as int,
-                            child: Text(item["label"] as String),
-                          ))
-                      .toList(),
-                  onChanged: (value) =>
-                      setState(() => nutritionalDeficiency = value),
-                ),
-                DropdownButtonFormField<int>(
-                  decoration: const InputDecoration(
-                    labelText: "¿Que nivel de estrés manejas comunmente?",
-                    labelStyle: TextStyle(
-                      // Estilo para la etiqueta
-                      fontSize: 13, // Tamaño de fuente más pequeño
-                    ),
-                  ),
-                  items: stressLevels
-                      .map((item) => DropdownMenuItem<int>(
-                            value: item["value"] as int,
-                            child: Text(item["label"] as String),
-                          ))
-                      .toList(),
-                  onChanged: (value) => setState(() => stressLevel = value),
-                ),
-                TextField(
-                  decoration: const InputDecoration(labelText: "Tu edad"),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() => age = int.tryParse(value));
-                  },
-                ),
-                SwitchListTile(
-                  title: const Text(
-                      "¿Tienes malos hábitos de cuidado del cabello?"),
-                  value: poorHairCare,
-                  onChanged: (value) => setState(() => poorHairCare = value),
-                ),
-                SwitchListTile(
-                  title: const Text(
-                      "¿Has estado expuesto a factores ambientales?"),
-                  value: environmentalFactors,
-                  onChanged: (value) =>
-                      setState(() => environmentalFactors = value),
-                ),
-                SwitchListTile(
-                  title: const Text("¿Fumas?"),
-                  value: smoking,
-                  onChanged: (value) => setState(() => smoking = value),
-                ),
-                SwitchListTile(
-                  title: const Text("¿Has perdido peso recientemente?"),
-                  value: weightLoss,
-                  onChanged: (value) => setState(() => weightLoss = value),
-                ),
-                const SizedBox(height: 16),
-                if (predictionMessage != null &&
-                    predictionColor != null &&
-                    !loading) ...[
-                  predictionImage != null
-                      ? Image.asset(
-                          predictionImage!,
-                          width: 100,
-                          height: 100,
-                        )
-                      : Container(),
-                  const SizedBox(height: 16),
-                  Text(
-                    predictionMessage!,
-                    style: TextStyle(
-                        color: predictionColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-                const SizedBox(height: 16),
-/*                loading
+              ),
+              items: stressLevels
+                  .map((item) => DropdownMenuItem<int>(
+                        value: item["value"] as int,
+                        child: Text(item["label"] as String),
+                      ))
+                  .toList(),
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => stressLevel = value),
+            ),
+            TextField(
+              decoration: const InputDecoration(labelText: "Tu edad"),
+              keyboardType: TextInputType.number,
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => age = int.tryParse(value)),
+              enabled: !loading,
+            ),
+            SwitchListTile(
+              title:
+                  const Text("¿Tienes malos hábitos de cuidado del cabello?"),
+              value: poorHairCare,
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => poorHairCare = value),
+            ),
+            SwitchListTile(
+              title: const Text("¿Has estado expuesto a factores ambientales?"),
+              value: environmentalFactors,
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => environmentalFactors = value),
+            ),
+            SwitchListTile(
+              title: const Text("¿Fumas?"),
+              value: smoking,
+              onChanged:
+                  loading ? null : (value) => setState(() => smoking = value),
+            ),
+            SwitchListTile(
+              title: const Text("¿Has perdido peso recientemente?"),
+              value: weightLoss,
+              onChanged: loading
+                  ? null
+                  : (value) => setState(() => weightLoss = value),
+            ),
+            const SizedBox(height: 16),
+            if (predictionMessage != null &&
+                predictionColor != null &&
+                !loading) ...[
+              predictionImage != null
+                  ? Image.asset(
+                      predictionImage!,
+                      width: 100,
+                      height: 100,
+                    )
+                  : Container(),
+              const SizedBox(height: 16),
+              Text(
+                predictionMessage!,
+                style: TextStyle(
+                    color: predictionColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            const SizedBox(height: 16),
+            /*                loading
                     ? const Center(
                         child: CircularProgressIndicator(
                           color: Colors.amberAccent,
@@ -399,10 +410,8 @@ class _PredictorScreenState extends State<PredictorScreen> {
                         onPressed: handlePredict,
                         child: const Text("PREDECIR"),
                       ),*/
-                const SizedBox(height: 16),
-                const Text("© 2025 by Carlos Gutierrez"),
-              ],
-            ),
+            const SizedBox(height: 16),
+            const Text("© 2025 by Carlos Gutierrez"),
           ],
         ),
       ),
