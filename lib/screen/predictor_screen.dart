@@ -16,7 +16,7 @@ class PredictorScreen extends StatefulWidget {
 class _PredictorScreenState extends State<PredictorScreen> {
   // Controladores de IP y puerto
   final TextEditingController ipController =
-      TextEditingController(text: "54.225.49.131");
+      TextEditingController(text: "54.236.4.87");
   final TextEditingController portController =
       TextEditingController(text: "3010");
 
