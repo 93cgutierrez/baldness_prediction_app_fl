@@ -91,6 +91,9 @@ class _PredictorScreenState extends State<PredictorScreen> {
     {"label": "Alto", "value": 0},
   ];
 
+  final Duration timeout =
+      const Duration(seconds: 10); // Timeout de 10 segundos
+
   Future<void> handlePredict() async {
     //close keyboard and remove focus
     FocusManager.instance.primaryFocus?.unfocus();
@@ -160,7 +163,7 @@ class _PredictorScreenState extends State<PredictorScreen> {
         Uri.parse(url),
         body: json.encode(body),
         headers: {"Content-Type": "application/json"},
-      );
+      ).timeout(timeout);
 
       final data = json.decode(response.body);
       final prediction = data['prediction'];
@@ -203,7 +206,8 @@ class _PredictorScreenState extends State<PredictorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: loading ? null : predictionColor,
+        backgroundColor:
+            loading || predictionColor == null ? null : predictionColor,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -212,10 +216,12 @@ class _PredictorScreenState extends State<PredictorScreen> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
-                color: loading ? Colors.black : Colors.white,
+                color: loading || predictionColor == null
+                    ? Colors.black
+                    : Colors.white,
               ),
             ),
-            loading
+            loading || predictionAnimation == null
                 ? Image.asset(
                     "assets/logo.png",
                     width: 40,
@@ -265,7 +271,12 @@ class _PredictorScreenState extends State<PredictorScreen> {
                 ),
                 DropdownButtonFormField<int>(
                   decoration: const InputDecoration(
-                      labelText: "¿Tienes alguna condición médica?"),
+                    labelText: "¿Tienes alguna condición médica?",
+                    labelStyle: TextStyle(
+                      // Estilo para la etiqueta
+                      fontSize: 13, // Tamaño de fuente más pequeño
+                    ),
+                  ),
                   items: medicalConditions
                       .map((item) => DropdownMenuItem<int>(
                             value: item["value"] as int,
@@ -277,7 +288,12 @@ class _PredictorScreenState extends State<PredictorScreen> {
                 ),
                 DropdownButtonFormField<int>(
                   decoration: const InputDecoration(
-                      labelText: "¿Has tomado medicamentos o tratamientos?"),
+                    labelText: "¿Has tomado medicamentos o tratamientos?",
+                    labelStyle: TextStyle(
+                      // Estilo para la etiqueta
+                      fontSize: 13, // Tamaño de fuente más pequeño
+                    ),
+                  ),
                   items: medications
                       .map((item) => DropdownMenuItem<int>(
                             value: item["value"] as int,
@@ -288,8 +304,13 @@ class _PredictorScreenState extends State<PredictorScreen> {
                 ),
                 DropdownButtonFormField<int>(
                   decoration: const InputDecoration(
-                      labelText:
-                          "¿Tienes o has tenido alguna deficiencia nutricional?"),
+                    labelText:
+                        "¿Tienes o has tenido alguna deficiencia nutricional?",
+                    labelStyle: TextStyle(
+                      // Estilo para la etiqueta
+                      fontSize: 13, // Tamaño de fuente más pequeño
+                    ),
+                  ),
                   items: nutritionalDeficiencies
                       .map((item) => DropdownMenuItem<int>(
                             value: item["value"] as int,
@@ -301,7 +322,12 @@ class _PredictorScreenState extends State<PredictorScreen> {
                 ),
                 DropdownButtonFormField<int>(
                   decoration: const InputDecoration(
-                      labelText: "¿Que nivel de estrés manejas comunmente?"),
+                    labelText: "¿Que nivel de estrés manejas comunmente?",
+                    labelStyle: TextStyle(
+                      // Estilo para la etiqueta
+                      fontSize: 13, // Tamaño de fuente más pequeño
+                    ),
+                  ),
                   items: stressLevels
                       .map((item) => DropdownMenuItem<int>(
                             value: item["value"] as int,
